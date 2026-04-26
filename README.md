@@ -65,17 +65,3 @@ When the Critic detects gaps:
 | **Verification** | NLI-based Faithfulness |
 
 ---
-📁 Project Structure
-DeepResearchAgent/
-├── research_agent.py   # Main agent code
-├── requirements.txt    # Dependencies
-└── README.md          # This file
-
-🔬 Research Focus
-Symmetric Self-Reflective Architectures for Verifiable Deep Research
-
-This project explores how AI agents can:
-
-Detect their own mistakes
-Self-correct using feedback loops
-Generate verifiably faithful reports
