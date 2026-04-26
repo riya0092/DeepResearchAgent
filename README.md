@@ -13,9 +13,9 @@
 
 ## 🎯 What is AutoScholar?
 
-AutoScholar is an **AI Research Agent** that doesn't just generate answers—it **verifies** them. 
+AutoScholar is an **AI Research Agent** that doesn't just generate answers—it **verifies** them.
 
-Unlike simple chatbots that give one-shot answers, AutoScholar:
+Unlike simple chatbots, AutoScholar:
 - Plans research strategy
 - Searches multiple sources
 - Writes detailed reports
@@ -23,15 +23,16 @@ Unlike simple chatbots that give one-shot answers, AutoScholar:
 
 ---
 
-## 🏗️ How It Works
+## 🏗️ Architecture
 
-📝 Query → 🧠 Planner → 🔍 Executor → ✍️ Writer → 🔎 Critic ↓ ❌ INVALID? ↓ ↩️ Self-Correct ↓ ✅ VALID? ↓ 📄 Report
+User Query ↓ Planner (breaks into sub-queries) ↓ Executor (searches via Tavily) ↓ Writer (synthesizes report) ↓ Critic (checks faithfulness) ↓ ┌── VALID? ──┐ YES ↓ ↓ NO END Replan (new search) ↓ Executor (loop)
 
-**Key Innovation:** The Critic uses **NLI-based verification** to mathematically check if every claim in the report is actually supported by the evidence.
+
+**Key Innovation:** The Critic uses **NLI-based verification** to check if every claim is supported by evidence.
+
+---
 
 ## 📊 Results
-
-### Evaluation Summary
 
 | Query Type | Result | Self-Correction |
 |------------|--------|-----------------|
@@ -39,7 +40,6 @@ Unlike simple chatbots that give one-shot answers, AutoScholar:
 | Complex multi-hop (CHIPS Act, GPU impact) | ⚠️ Gap detected | 2 iterations each |
 
 ### Key Metrics
-
 | Metric | Value |
 |--------|-------|
 | **Self-Correction Rate** | 50% (triggered on complex queries) |
@@ -47,21 +47,76 @@ Unlike simple chatbots that give one-shot answers, AutoScholar:
 | **Simple Query Faithfulness** | 95% |
 | **Complex Query Resolution** | Resolved via self-correction |
 
-### How Self-Correction Works
-
-When the Critic detects gaps:
-1. ⚠️ **Gap Identified** → Plan new search
-2. 🔍 **Re-Search** → Find missing information
-3. ✍️ **Re-Write** → Update the report
-4. ✅ **Verified** → Final report ready
-
-## 🛠️ Tech Stack
-
-| Component | Technology |
-|-----------|------------|
-| **LLM** | Llama 3.3 (Groq) |
-| **Orchestration** | LangGraph |
-| **Search** | Tavily AI |
-| **Verification** | NLI-based Faithfulness |
-
 ---
+
+ Install Dependencies
+pip install langgraph langchain-groq tavily-python pandas pydantic python-dotenv
+
+## Get API Keys
+Service	URL	Free Tier
+Groq	console.groq.com	100K tokens/day
+Tavily	tavily.com	1000 searches/month
+
+## Set Environment Variables
+export GROQ_API_KEY="your_groq_key_here"
+export TAVILY_API_KEY="your_tavily_key_here"
+
+##🚀 Usage
+# Run Directly
+python research_agent.py
+It will ask for your query. Type anything!
+
+###🛠️ Tech Stack
+Component	Technology	Purpose
+LLM	Llama 3.3 (Groq)	Reasoning & Generation
+Orchestration	LangGraph	Agent workflow management
+Search	Tavily AI	Real-time web research
+State Management	TypedDict	LangGraph state machine
+Verification	Custom NLI-based Critic	Hallucination detection
+
+###📁 Project Structure
+DeepResearchAgent/
+├── research_agent.py    # Main agent code (LangGraph + Groq + Tavily)
+├── requirements.txt      # Python dependencies
+├── README.md            # This file
+
+##📄 Research Proposal
+"Symmetric Self-Reflective Architectures for Verifiable Deep Research"
+The Problem:
+
+LLMs often hallucinate claims not supported by evidence
+Simple RAG systems cannot self-correct when they fail
+Multi-hop research queries require iterative refinement
+Our Solution:
+
+Bidirectional Loop: Writer → Critic → Replan → Executor
+NLI-based Verification: Mathematical claim-evidence entailment
+Self-Correction: Automatic re-research when gaps detected
+Inspiration:
+
+Self-RAG (Asai et al., 2024)
+ReAct (Yao et al., 2023)
+Corrective RAG (CRAG)
+
+##🔬 Technical Highlights
+# 1. Agentic Pipeline
+Planner → Executor → Writer → Critic → Replan
+                                    ↓
+                            Loop back to Executor
+                                    ↓
+                                END
+# 2. State Machine
+AgentState {
+    query: str
+    plan: List[str]
+    research_data: Dict[str, str]
+    final_answer: str
+    critique: str
+    is_valid: bool
+    iteration_count: int
+}
+# 3. Conditional Routing
+If is_valid = True → END
+If is_valid = False → Re-search
+Max iterations: 2 (prevents infinite loops)
+
