@@ -59,21 +59,21 @@ python research_agent.py
 It will ask for your query. Type anything!
 
 ## 🛠️ Tech Stack
-
-Component	Technology
-LLM	Llama 3.3 (Groq)
-Orchestration	LangGraph
-Search	Tavily AI
-State Management	TypedDict
-Verification	Custom NLI-based Critic
-
+┌────────────────────┬─────────────────────────┐
+│ Component          │ Technology              │
+├────────────────────┼─────────────────────────┤
+│ LLM                │ Llama 3.3 (Groq)        │
+│ Orchestration      │ LangGraph               │
+│ Search             │ Tavily AI               │
+│ State Management   │ TypedDict               │
+│ Verification       │ Custom NLI-based Critic │
+└────────────────────┴─────────────────────────┘
 ## 📁 Project Structure
 
 DeepResearchAgent/
-DeepResearchAgent/
-├── research_agent.py    # Main agent code (LangGraph + Groq + Tavily)
-├── requirements.txt      # Python dependencies
-├── README.md            # This file
+├── research_agent.py (Main Agent Code)
+├── requirements.txt (Python dependencies)
+└── README.md (This file)
 
 
 ## 📄 Research Proposal
