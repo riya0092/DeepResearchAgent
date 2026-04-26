@@ -19,22 +19,32 @@ User Query → Planner (breaks into sub-queries) → Executor (searches via Tavi
 
 Key Innovation: The Critic uses NLI-based verification to check if every claim is supported by evidence.
 
+
+**Key Innovation:** The Critic uses **NLI-based verification** to check if every claim is supported by evidence.
+
+---
+
 ## 📊 Results
 
-Simple factual (NVIDIA, TSMC): ✅ Faithful (95%), Not needed self-correction
-Complex multi-hop (CHIPS Act, GPU impact): ⚠️ Gap detected, 2 iterations each
+| Query Type | Result | Self-Correction |
+|------------|--------|-----------------|
+| Simple factual (NVIDIA, TSMC) | ✅ Faithful (95%) | Not needed |
+| Complex multi-hop (CHIPS Act, GPU impact) | ⚠️ Gap detected | 2 iterations each |
 
-Key Metrics:
-Self-Correction Rate: 50% (triggered on complex queries)
-Average Iterations: 1.0 per query
-Simple Query Faithfulness: 95%
-Complex Query Resolution: Resolved via self-correction
+**Key Metrics:**
+- **Self-Correction Rate:** 50% (triggered on complex queries)
+- **Average Iterations:** 1.0 per query
+- **Simple Query Faithfulness:** 95%
+- **Complex Query Resolution:** Resolved via self-correction
+
+---
 
 ## 🔧 Installation
 
 pip install langgraph langchain-groq tavily-python pandas pydantic python-dotenv
 
 Required API Keys:
+
 Groq: console.groq.com (100K tokens/day free)
 Tavily: tavily.com (1000 searches/month free)
 
@@ -45,26 +55,26 @@ export TAVILY_API_KEY="your_tavily_key_here"
 ## 🚀 Usage
 
 python research_agent.py
-It will ask for your query. Type anything!
 
-Or in Python:
-from research_agent import run_research
-result = run_research("What is NVIDIA?")
-print(result['final_answer'])
+It will ask for your query. Type anything!
 
 ## 🛠️ Tech Stack
 
-LLM: Llama 3.3 (Groq)
-Orchestration: LangGraph
-Search: Tavily AI
-State Management: TypedDict
-Verification: Custom NLI-based Critic
+Component	Technology
+LLM	Llama 3.3 (Groq)
+Orchestration	LangGraph
+Search	Tavily AI
+State Management	TypedDict
+Verification	Custom NLI-based Critic
 
 ## 📁 Project Structure
 
 DeepResearchAgent/
-├── README.md (This file)
-└── research_agent.py (Main agent code)
+DeepResearchAgent/
+├── research_agent.py    # Main agent code (LangGraph + Groq + Tavily)
+├── requirements.txt      # Python dependencies
+├── README.md            # This file
+
 
 ## 📄 Research Proposal
 
@@ -75,7 +85,7 @@ The Problem:
 - Simple RAG systems cannot self-correct
 - Multi-hop queries require iterative refinement
 
-Our Solution:
+Proposed Solution:
 - Bidirectional Loop: Writer → Critic → Replan → Executor
 - NLI-based Verification: Mathematical claim-evidence entailment
 - Self-Correction: Automatic re-research when gaps detected
@@ -85,10 +95,24 @@ Inspiration: Self-RAG (Asai et al., 2024), ReAct (Yao et al., 2023), CRAG
 ## 🔬 Technical Highlights
 
 Agentic Pipeline:
-Planner → Executor → Writer → Critic → Replan → Loop back to Executor → END
+Planner → Executor → Writer → Critic → Replan
+                                    ↓
+                            Loop back to Executor
+                                    ↓
+                                END
+
 
 State Machine:
-AgentState { query, plan, research_data, final_answer, critique, is_valid, iteration_count }
+AgentState {
+    query: str
+    plan: List[str]
+    research_data: Dict[str, str]
+    final_answer: str
+    critique: str
+    is_valid: bool
+    iteration_count: int
+}
+
 
 Conditional Routing:
 If is_valid = True → END
