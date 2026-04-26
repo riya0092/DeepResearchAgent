@@ -9,6 +9,13 @@ from typing import List as TList
 from tavily import TavilyClient
 from langgraph.graph import StateGraph, START, END
 
+# Check API keys
+if "GROQ_API_KEY" not in os.environ:
+    os.environ["GROQ_API_KEY"] = input("Enter Groq API Key: ")
+if "TAVILY_API_KEY" not in os.environ:
+    os.environ["TAVILY_API_KEY"] = input("Enter Tavily API Key: ")
+
+
 # STATE
 class AgentState(TypedDict):
     query: str
@@ -99,7 +106,6 @@ OUTPUT (ONE WORD ONLY):"""
 
     return {"critique": response.content, "is_valid": is_valid}
 
-=
 # REPLAN (FIXED - Returns dict, not "END")
 def replan_node(state: AgentState):
     if state['is_valid']:
@@ -175,4 +181,14 @@ def run_research(query: str):
         "iteration_count": 0
     }
     return research_agent.invoke(initial_state)
+
+# MAIN FUNCTION:
+if __name__ == "__main__":
+    query = input("Enter research query: ")
+    result = run_research(query)
+    print("\n" + "="*50)
+    print("FINAL REPORT:")
+    print("="*50)
+    print(result['final_answer'])
+
 
