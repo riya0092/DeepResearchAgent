@@ -44,9 +44,8 @@ Key Innovation: The Critic uses NLI-based verification to check if every claim i
 pip install langgraph langchain-groq tavily-python pandas pydantic python-dotenv
 
 Required API Keys:
-
-Groq: console.groq.com (100K tokens/day free)
-Tavily: tavily.com (1000 searches/month free)
+- Groq: console.groq.com (100K tokens/day free)
+- Tavily: tavily.com (1000 searches/month free)
 
 Set Environment Variables:
 export GROQ_API_KEY="your_groq_key_here"
@@ -59,21 +58,19 @@ python research_agent.py
 It will ask for your query. Type anything!
 
 ## 🛠️ Tech Stack
-┌────────────────────┬─────────────────────────┐
-│ Component          │ Technology              │
-├────────────────────┼─────────────────────────┤
-│ LLM                │ Llama 3.3 (Groq)        │
-│ Orchestration      │ LangGraph               │
-│ Search             │ Tavily AI               │
-│ State Management   │ TypedDict               │
-│ Verification       │ Custom NLI-based Critic │
-└────────────────────┴─────────────────────────┘
+
+- **LLM:** Llama 3.3 (Groq)
+- **Orchestration:** LangGraph
+- **Search:** Tavily AI
+- **State Management:** TypedDict
+- **Verification:** Custom NLI-based Critic
+  
 ## 📁 Project Structure
 
 DeepResearchAgent/
-├── research_agent.py (Main Agent Code)
-├── requirements.txt (Python dependencies)
-└── README.md (This file)
+├── research_agent.py
+├── requirements.txt
+└── README.md
 
 
 ## 📄 Research Proposal
@@ -92,32 +89,6 @@ Proposed Solution:
 
 Inspiration: Self-RAG (Asai et al., 2024), ReAct (Yao et al., 2023), CRAG
 
-## 🔬 Technical Highlights
-
-Agentic Pipeline:
-Planner → Executor → Writer → Critic → Replan
-                                    ↓
-                            Loop back to Executor
-                                    ↓
-                                END
-
-
-State Machine:
-AgentState {
-    query: str
-    plan: List[str]
-    research_data: Dict[str, str]
-    final_answer: str
-    critique: str
-    is_valid: bool
-    iteration_count: int
-}
-
-
-Conditional Routing:
-If is_valid = True → END
-If is_valid = False → Re-search
-Max iterations: 2
 
 ⭐ Star this repo if you found it useful!
 
